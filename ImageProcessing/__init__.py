@@ -14,7 +14,7 @@ from ADC_function import file_not_exist_or_empty
 def face_crop_width(filename, width, height):
     aspect_ratio = config.getInstance().face_aspect_ratio()
     # 新宽度是高度的2/3
-    cropWidthHalf = int(height/3)
+    cropWidthHalf = int(height / 3)
     try:
         locations_model = config.getInstance().face_locations_model().lower().split(',')
         locations_model = filter(lambda x: x, locations_model)
@@ -22,8 +22,8 @@ def face_crop_width(filename, width, height):
             center, top = face_center(filename, model)
             # 如果找到就跳出循环
             if center:
-                cropLeft = center-cropWidthHalf
-                cropRight = center+cropWidthHalf
+                cropLeft = center - cropWidthHalf
+                cropRight = center + cropWidthHalf
                 # 越界处理
                 if cropLeft < 0:
                     cropLeft = 0
@@ -35,11 +35,11 @@ def face_crop_width(filename, width, height):
     except:
         print('[-]Not found face!   ' + filename)
     # 默认靠右切
-    return (width-cropWidthHalf * aspect_ratio, 0, width, height)
+    return (width - cropWidthHalf * aspect_ratio, 0, width, height)
 
 
 def face_crop_height(filename, width, height):
-    cropHeight = int(width*3/2)
+    cropHeight = int(width * 3 / 2)
     try:
         locations_model = config.getInstance().face_locations_model().lower().split(',')
         locations_model = filter(lambda x: x, locations_model)
@@ -74,7 +74,7 @@ def cutImage(imagecut, path, thumb_path, poster_path, skip_facerec=False):
         try:
             img = Image.open(fullpath_fanart)
             width, height = img.size
-            if width/height > 2/3:  # 如果宽度大于2
+            if width / height > 2 / 3:  # 如果宽度大于2
                 if imagecut == 4:
                     # 以人像为中心切取
                     img2 = img.crop(face_crop_width(fullpath_fanart, width, height))
@@ -84,7 +84,7 @@ def cutImage(imagecut, path, thumb_path, poster_path, skip_facerec=False):
                 else:
                     # 以人像为中心切取
                     img2 = img.crop(face_crop_width(fullpath_fanart, width, height))
-            elif width/height < 2/3:  # 如果高度大于3
+            elif width / height < 2 / 3:  # 如果高度大于3
                 # 从底部向上切割
                 img2 = img.crop(face_crop_height(fullpath_fanart, width, height))
             else:  # 如果等于2/3
@@ -110,5 +110,5 @@ def face_center(filename, model):
         return (0, 0)
 
 if __name__ == '__main__':
-    cutImage(1,'z:/t/','p.jpg','o.jpg')
-    #cutImage(1,'H:\\test\\','12.jpg','test.jpg')
+    cutImage(1, 'z:/t/', 'p.jpg', 'o.jpg')
+    # cutImage(1,'H:\\test\\','12.jpg','test.jpg')

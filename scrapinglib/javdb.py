@@ -7,6 +7,26 @@ from .httprequest import request_session
 from .parser import Parser
 
 
+def format_ranke_name(ranke_name=None) -> str:
+    # 获取列表
+    # ranke_name = "JavDB 2021年度TOP250"
+    if ranke_name.find("年度TOP250") != -1:
+        result = ranke_name[ranke_name.find("年度TOP250") - 4:ranke_name.find("年度TOP250")] + '年TOP250'
+        return result
+
+    match ranke_name:
+        case "JavDB 影片TOP250":
+            result = "TOP250"
+        case "JavDB 有碼影片TOP250":
+            result = "有码TOP250"
+        case "JavDB 無碼影片TOP250":
+            result = "无码TOP250"
+        case _:
+            print(f"无法格式化排名key: {ranke_name}")
+            return ranke_name
+    return result
+
+
 class Javdb(Parser):
     source = 'javdb'
 
@@ -84,6 +104,7 @@ class Javdb(Parser):
         javdb_url = 'https://' + self.dbsite + '.com/search?q=' + number + '&f=all'
         try:
             resp = self.session.get(javdb_url)
+            request_session(cookies=self.cookies, proxies=self.proxies, verify=self.verify)
         except Exception as e:
             #print(e)
             raise Exception(f'[!] {self.number}: page not fond in javdb')
@@ -175,12 +196,54 @@ class Javdb(Parser):
             self.fixstudio = True
         return r
 
+    # def getOutline(self, htmltree):
+    #     if self.morestoryline:
+    #         from .storyline import getStoryline
+    #         return getStoryline(self.number, self.getUncensored(htmltree),
+    #                             proxies=self.proxies, verify=self.verify)
+    #     return ''
+
+    #
+    # TODO: 获取剧情介绍,改为用评论 和评价星级
+    # <a class="review-tab" data-url="/v/0RRqe3/reviews/lastest">
     def getOutline(self, htmltree):
-        if self.morestoryline:
-            from .storyline import getStoryline
-            return getStoryline(self.number, self.getUncensored(htmltree),
-                                proxies=self.proxies, verify=self.verify)
-        return ''
+
+        # javdb_url = 'https://' + self.dbsite + '.com/search?q=' + number + '&f=all'
+
+        href = htmltree.xpath('//a[@class="review-tab"]/@data-url')[0]
+        javdb_url = 'https://' + self.dbsite + '.com' + href
+        try:
+            resp = self.session.get(javdb_url)
+        except Exception as e:
+            # print(e)
+            raise Exception(f'[!] {self.number}: page not fond in javdb')
+
+        judgement = ''
+
+        http_code = etree.fromstring(resp.text, etree.HTMLParser())
+        item_root = http_code.xpath('//dt[@class="review-item"]')
+
+        for item in item_root:
+            # 获取评价内容
+            judge = item.xpath('.//div[@class="content"]')[0]
+            # 判断是否为空
+            judge_str = ''
+            span = judge.xpath('./p')[0].xpath('./text()')
+            for text in span:
+                text_list = text.split()
+                judge_str = judge_str + "".join(text_list).strip()
+
+            star_str = ''
+            # 获取⭐
+            star = item.xpath('.//span[@class="score-stars"]')
+            if star:
+                i = star[0].xpath('.//i[@class="icon-star"]')
+                star_str += ('⭐' * len(i))
+            else:
+                star_str += ('☆')
+
+            judgement += (star_str + judge_str + "|")
+        return judgement
 
     def getTrailer(self, htmltree):
         video = super().getTrailer(htmltree)
@@ -195,7 +258,14 @@ class Javdb(Parser):
         return video_url
 
     def getTags(self, htmltree):
-        return self.getTreeAllbyExprs(htmltree, self.expr_tags, self.expr_tags2)
+        tags = self.getTreeAllbyExprs(htmltree, self.expr_tags, self.expr_tags2)
+        # TODO: 增加排名到Tag中 ranking
+        ## 排名 expr_ranking = '//div[@class="control ranking-tags"]//a//span[@class="tag is-warning tooltip"]/text()'
+        ranking = htmltree.xpath('//div[@class="control ranking-tags"]//a//span[@class="tag is-warning tooltip"]/text()')
+        # 排名格式化后放入tag中
+        tags.extend([format_ranke_name(fn) for fn in ranking])
+        return tags
+
 
     def getUserRating(self, htmltree):
         try:

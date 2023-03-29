@@ -307,9 +307,9 @@ class Parser:
         try:
             result1 = self.getTreeAll(tree, expr)
             result2 = self.getTreeAll(tree, expr2)
-            clean = [ x.strip() for x in result1 if x.strip() and x.strip() != ',']
-            clean2 = [ x.strip() for x in result2 if x.strip() and x.strip() != ',']
-            result =  list(set(clean + clean2))
+            clean = [x.strip() for x in result1 if x.strip() and x.strip() != ',']
+            clean2 = [x.strip() for x in result2 if x.strip() and x.strip() != ',']
+            result = list(set(clean + clean2))
             return result
         except:
             return []

@@ -2,19 +2,10 @@
 # - https://github.com/yoshiko2/Movie_Data_Capture/wiki#%E9%85%8D%E7%BD%AEconfigini
 [common]
 main_mode = 1
-;source_folder=Z:\video
-;failed_output_folder=Z:\video\failed
-;success_output_folder=Z:\video\JAV_3.0
-
-;source_folder=Y:\
-;failed_output_folder=Y:\failed
-;success_output_folder=Y:\JAV_3.0
-
-source_folder=X:\
-failed_output_folder=X:\failed
-success_output_folder=X:\JAV_3.0
-
-link_mode=0
+source_folder = ./
+failed_output_folder = failed
+success_output_folder = JAV_output
+link_mode = 0
 ; 0: 不刮削硬链接文件 1: 刮削硬链接文件
 scan_hardlink = 0
 failed_move = 0
@@ -26,7 +17,7 @@ actor_gender = female
 del_empty_folder = 1
 ; 跳过最近(默认:30)天新修改过的.NFO，可避免整理模式(main_mode=3)和软连接(soft_link=0)时
 ; 反复刮削靠前的视频文件，0为处理所有视频文件
-nfo_skip_days = 1
+nfo_skip_days = 30
 ignore_failed_list = 0
 download_only_missing_images = 1
 mapping_table_validity = 7
@@ -40,10 +31,10 @@ sleep = 3
 
 [advenced_sleep]
 ; 处理完多少个视频文件后停止，0为处理所有视频文件
-stop_counter = 5
+stop_counter = 0
 ; 再运行延迟时间，单位：h时m分s秒 举例: 1h30m45s(1小时30分45秒)  45(45秒)
 ; stop_counter不为零的条件下才有效，每处理stop_counter部影片后延迟rerun_delay秒再次运行
-rerun_delay = 1m
+rerun_delay = 0
 ; 以上参数配合使用可以以多次少量的方式刮削或整理数千个文件而不触发翻译或元数据站封禁
 
 [proxy]
@@ -66,11 +57,11 @@ image_naming_with_number = 0
 update_check = 1
 
 [priority]
-website = javdb,javbus,airav,jav321,fanza,xcity,mgstage,fc2,avsox,dlsite,carib,madou,mv91,getchu,gcolle
+website = javbus,airav,jav321,fanza,xcity,mgstage,fc2,avsox,dlsite,carib,madou,mv91,getchu,javdb,gcolle
 
 [escape]
 literals = \()/
-folders = failed,JAV_3.0
+folders = failed,JAV_output
 
 [debug_mode]
 switch = 0
@@ -124,9 +115,9 @@ switch = 1
 ; xcity和amazon是日语的，由于amazon商城没有番号信息，选中对应DVD的准确率仅99.6%。如果三个列表全部为空则不查询，
 ; 设置成不查询可大幅提高刮削速度。
 ; site=
-site=1:avno1,4:airavwiki
-censored_site=2:airav,5:xcity,6:amazon
-uncensored_site=3:58avgo
+site = airav,avno1,airavwiki
+censored_site = airav,avno1,xcity,amazon
+uncensored_site = 58avgo
 ; 运行模式：0:顺序执行(最慢) 1:线程池(默认值) 2:进程池(启动开销比线程池大，并发站点越多越快)
 run_mode = 1
 ; show_result剧情简介调试信息 0关闭 1简略 2详细(详细部分不记入日志)，剧情简介失效时可打开2查看原因

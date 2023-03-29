@@ -341,7 +341,10 @@ def print_files(path, leak_word, c_word, naming_rule, part, cn_sub, json_data, f
         elif json_data['source'] == 'pissplay':
             outline = f"{outline}"
         else:
-            outline = f"{number}#{outline}"
+            # outline = f"{number}#{outline}"
+            f_rating = json_data.get('userrating')
+            uc = json_data.get('uservotes')
+            outline = f"{f_rating}分, 由{uc}人评价#{outline}"
         with open(nfo_path, "wt", encoding='UTF-8') as code:
             print('<?xml version="1.0" encoding="UTF-8" ?>', file=code)
             print("<movie>", file=code)
@@ -359,6 +362,11 @@ def print_files(path, leak_word, c_word, naming_rule, part, cn_sub, json_data, f
                 print("  <set>" + series + "</set>", file=code)
             except:
                 print("  <set></set>", file=code)
+            # TOP250 加入到合集中
+            for i in tag:
+                if 'TOP250' in i:
+                    print("  <set>" + "TOP250" + "</set>", file=code)
+                    break
             print("  <studio>" + studio + "</studio>", file=code)
             print("  <year>" + year + "</year>", file=code)
             if not config.getInstance().jellyfin():
@@ -438,7 +446,7 @@ def print_files(path, leak_word, c_word, naming_rule, part, cn_sub, json_data, f
                 f_rating = json_data.get('userrating')
                 uc = json_data.get('uservotes')
                 print(f"""  <rating>{round(f_rating * 2.0, 1)}</rating>
-  <criticrating>{round(f_rating * 20.0, 1)}</criticrating>
+  <criticrating>{uc}</criticrating>
   <ratings>
     <rating name="javdb" max="5" default="true">
       <value>{f_rating}</value>
