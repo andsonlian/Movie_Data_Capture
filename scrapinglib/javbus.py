@@ -39,7 +39,7 @@ class Javbus(Parser):
                 result = self.dictformat(htmltree)
                 return result
             try:
-                self.detailurl = 'https://www.javbus.com/' + number
+                self.detailurl = 'https://www.javbus.com/' + number  # + "_2021-12-17"
                 self.htmlcode = self.getHtml(self.detailurl)
             except:
                 mirror_url = "https://www." + secrets.choice([
