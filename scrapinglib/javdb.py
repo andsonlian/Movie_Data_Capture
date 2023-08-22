@@ -78,10 +78,11 @@ class Javdb(Parser):
             self.cookies = core.dbcookies
         else:
             self.cookies =  {'over18':'1', 'theme':'auto', 'locale':'zh'}
-        if core.dbsite:
-            self.dbsite = core.dbsite
-        else:
-            self.dbsite = 'javdb'
+        # if core.dbsite:
+        #     self.dbsite = core.dbsite
+        # else:
+        #     self.dbsite = 'javdb'
+        self.dbsite = 'javdb'
 
     def search(self, number: str):
         self.number = number
