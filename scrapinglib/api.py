@@ -52,9 +52,14 @@ def getSupportedSources(tag='adult'):
 class Scraping:
     """
     """
-    adult_full_sources = ['javdb', 'javbus', 'airav', 'fanza', 'xcity', 'jav321',
-                          'mgstage', 'fc2', 'avsox', 'dlsite', 'carib', 'madou', 
-                          'getchu', 'gcolle','javday','pissplay','javmenu'
+    # 此处javdb后面跟着的域名会搜刮封面, javbus不稳定,请用其他 (connect retry 时,请打开全局代理)
+    # adult_full_sources = ['javdb', 'airav', 'javday', 'fanza', 'javbus', 'jav321',
+    #                       'fc2', 'avsox', 'dlsite', 'carib', 'madou', 'xcity','mgstage',
+    #                       'getchu', 'gcolle','pissplay','javmenu'
+    #                       ]
+    adult_full_sources = ['javdb', 'airav', 'javday', 'fanza', 'javbus', 'jav321',
+                          'fc2', 'avsox', 'dlsite', 'carib', 'xcity','mgstage',
+                          'getchu', 'gcolle','pissplay','javmenu'
                           ]
     adult_func_mapping = {
         'avsox': Avsox().scrape,

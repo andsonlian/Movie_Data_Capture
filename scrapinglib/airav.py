@@ -21,7 +21,8 @@ class Airav(Parser):
     def extraInit(self):
         # for javbus
         self.specifiedSource = None
-        self.addtion_Javbus = True
+        # self.addtion_Javbus = True
+        self.addtion_Javbus = False #2024-01-14 改为False 不去抓取javbus
 
     def search(self, number):
         self.number = number
@@ -29,7 +30,7 @@ class Airav(Parser):
             self.detailurl = self.specifiedUrl
         else:
             self.detailurl = "https://www.airav.wiki/api/video/barcode/" + self.number.upper() + "?lng=zh-CN"
-        if self.addtion_Javbus:
+        if self.addtion_Javbus: #2024-01-14 此处不需要再去执行javbus搜刮 airav就有数据
             engine = Javbus()
             javbusinfo = engine.scrape(self.number, self)
             if javbusinfo == 404:

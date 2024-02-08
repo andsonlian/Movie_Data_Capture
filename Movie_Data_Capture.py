@@ -574,7 +574,8 @@ def main(args: tuple) -> Path:
         return ('https://raw.githubusercontent.com/yoshiko2/Movie_Data_Capture/master/MappingTable/' + f,
                 Path.home() / '.local' / 'share' / 'mdc' / f)
 
-    map_tab = (fmd('mapping_actor.xml'), fmd('mapping_info.xml'), fmd('c_number.json'))
+    # map_tab = (fmd('mapping_actor.xml'), fmd('mapping_info.xml'), fmd('c_number.json'))
+    map_tab = {}
     for k, v in map_tab:
         if v.exists():
             if file_modification_days(str(v)) >= conf.mapping_table_validity():
