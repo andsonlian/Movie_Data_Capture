@@ -40,6 +40,22 @@ class Javbus(Parser):
                 return result
             try:
                 self.detailurl = 'https://www.javbus.com/' + number  # + "_2021-12-17"
+                # self.cookies = {'existmag': 'mag', 'PHPSESSID' : '6rf70n34sgtc2471d0kleoo1d6'}
+                self.extraheader = {
+                                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                                    "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
+                                    "sec-ch-ua": "\"Not A(Brand\";v=\"99\", \"Microsoft Edge\";v=\"121\", \"Chromium\";v=\"121\"",
+                                    "sec-ch-ua-mobile": "?0",
+                                    "sec-ch-ua-platform": "\"Windows\"",
+                                    "sec-fetch-dest": "document",
+                                    "sec-fetch-mode": "navigate",
+                                    "sec-fetch-site": "same-origin",
+                                    "sec-fetch-user": "?1",
+                                    "upgrade-insecure-requests": "1",
+                                    "cookie": "existmag=mag; PHPSESSID=6rf70n34sgtc2471d0kleoo1d6",
+                                    "Referer": "https://www.javbus.com/",
+                                    "Referrer-Policy": "strict-origin-when-cross-origin"
+                                  }
                 self.htmlcode = self.getHtml(self.detailurl)
             except:
                 mirror_url = "https://www." + secrets.choice([
