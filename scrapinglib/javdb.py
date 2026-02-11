@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from lxml import etree
 from .httprequest import request_session
 from .parser import Parser
+from curl_cffi import requests
 
 
 def format_ranke_name(ranke_name=None) -> str:
@@ -91,7 +92,8 @@ class Javdb(Parser):
             self.detailurl = self.specifiedUrl
         else:
             self.detailurl = self.queryNumberUrl(number)
-        self.deatilpage = self.session.get(self.detailurl).text
+        # self.deatilpage = self.session.get(self.detailurl).text
+        self.deatilpage = self.reqJAVDB(url=self.detailurl).text
         if '此內容需要登入才能查看或操作' in self.deatilpage or '需要VIP權限才能訪問此內容' in self.deatilpage:
             self.noauth = True
             self.imagecut = 0
@@ -101,13 +103,38 @@ class Javdb(Parser):
             result = self.dictformat(htmltree)
         return result
 
+    # 自定义请求，解决无法爬虫问题
+    def reqJAVDB(self, url):
+        # 本地代理一定要开，clash，否则无法连接
+        proxies = {
+            "http": "http://127.0.0.1:7897",  # 你的 Clash/V2Ray HTTP 代理埠
+            "https": "http://127.0.0.1:7897",
+        }
+        cookies = {'over18': '1', 'theme': 'auto', 'locale': 'zh'}
+        resp = requests.get(
+            url,
+            impersonate="chrome131",  # 試更新一點的版本，如 chrome131 或 edge
+            cookies=cookies,
+            proxies=proxies,
+            timeout=60  # 拉長 timeout 保險
+        )
+        # print(resp.text)
+        return resp
+
     def queryNumberUrl(self, number):
         javdb_url = 'https://' + self.dbsite + '.com/search?q=' + number + '&f=all'
+        proxies = {
+            "http": "http://127.0.0.1:7897",  # 你的 Clash/V2Ray HTTP 代理埠
+            "https": "http://127.0.0.1:7897",
+        }
+        cookies = {'over18':'1', 'theme':'auto', 'locale':'zh'}
         try:
-            resp = self.session.get(javdb_url)
-            request_session(cookies=self.cookies, proxies=self.proxies, verify=self.verify)
+            resp = self.reqJAVDB(url=javdb_url)
+            # print(resp.text)
+            # resp = self.session.get(javdb_url)
+            # request_session(cookies=self.cookies, proxies=self.proxies, verify=self.verify)
         except Exception as e:
-            #print(e)
+            print(e)
             raise Exception(f'[!] {self.number}: page not fond in javdb')
 
         self.querytree = etree.fromstring(resp.text, etree.HTMLParser()) 
