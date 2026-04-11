@@ -6,6 +6,7 @@ from lxml import etree
 from .httprequest import request_session
 from .parser import Parser
 from curl_cffi import requests
+from http.cookies import SimpleCookie
 
 
 def format_ranke_name(ranke_name=None) -> str:
@@ -111,6 +112,14 @@ class Javdb(Parser):
             "https": "http://127.0.0.1:7897",
         }
         cookies = {'over18': '1', 'theme': 'auto', 'locale': 'zh'}
+
+        with open("cookies.txt", encoding="utf-8") as f:
+            cookie_str = f.read().strip()
+        # 转成普通 dict（最常用格式）
+        cookies_new = {k: v.value for k, v in SimpleCookie(cookie_str).items()}
+
+        cookies.update(cookies_new)  # 覆盖式追加
+
         resp = requests.get(
             url,
             impersonate="chrome131",  # 試更新一點的版本，如 chrome131 或 edge
@@ -123,11 +132,11 @@ class Javdb(Parser):
 
     def queryNumberUrl(self, number):
         javdb_url = 'https://' + self.dbsite + '.com/search?q=' + number + '&f=all'
-        proxies = {
-            "http": "http://127.0.0.1:7897",  # 你的 Clash/V2Ray HTTP 代理埠
-            "https": "http://127.0.0.1:7897",
-        }
-        cookies = {'over18':'1', 'theme':'auto', 'locale':'zh'}
+        # proxies = {
+        #     "http": "http://127.0.0.1:7897",  # 你的 Clash/V2Ray HTTP 代理埠
+        #     "https": "http://127.0.0.1:7897",
+        # }
+        # cookies = {'over18':'1', 'theme':'auto', 'locale':'zh'}
         try:
             resp = self.reqJAVDB(url=javdb_url)
             # print(resp.text)
@@ -241,7 +250,8 @@ class Javdb(Parser):
         href = htmltree.xpath('//a[@class="review-tab"]/@data-url')[0]
         javdb_url = 'https://' + self.dbsite + '.com' + href
         try:
-            resp = self.session.get(javdb_url)
+            # resp = self.session.get(javdb_url)
+            resp = self.reqJAVDB(url=javdb_url)
         except Exception as e:
             # print(e)
             raise Exception(f'[!] {self.number}: page not fond in javdb')
