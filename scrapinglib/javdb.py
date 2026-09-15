@@ -222,10 +222,13 @@ class Javdb(Parser):
         # NOTE only female, we dont care others
         actor_gendor = 'female'
         for act in actors:
-            if((actor_gendor == 'all')
-            or (actor_gendor == 'both' and genders[idx] in ['symbol female', 'symbol male'])
-            or (actor_gendor == 'female' and genders[idx] == 'symbol female')
-            or (actor_gendor == 'male' and genders[idx] == 'symbol male')):
+            gender = genders[idx] if idx < len(genders) else None
+            if (
+                    actor_gendor == 'all'
+                    or (actor_gendor == 'both' and gender in ['symbol female', 'symbol male'])
+                    or (actor_gendor == 'female' and gender == 'symbol female')
+                    or (actor_gendor == 'male' and gender == 'symbol male')
+            ):
                 r.append(act)
             idx = idx + 1
         if re.match(r'FC2-[\d]+', self.number, re.A) and not r:
