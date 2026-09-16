@@ -40,7 +40,7 @@ class Javdb(Parser):
     expr_runtime2 = '//strong[contains(text(),"時長")]/../span/a/text()'
     expr_uncensored = '//strong[contains(text(),"類別")]/../span/a[contains(@href,"/tags/uncensored?") or contains(@href,"/tags/western?")]'
     expr_actor = '//span[@class="value"]/a[contains(@href,"/actors/")]/text()'
-    expr_actor2 = '//span[@class="value"]/a[contains(@href,"/actors/")]/../strong/@class'
+    expr_actor2 = '//span[@class="value"]/a[contains(@href,"/actors/")]/@class'
     expr_release = '//strong[contains(text(),"日期")]/../span/text()'
     expr_release_no = '//*[contains(@class,"movie-list")]/div/a/div[contains(@class, "meta")]/text()'
     expr_studio = '//strong[contains(text(),"片商")]/../span/a/text()'
@@ -225,8 +225,8 @@ class Javdb(Parser):
             gender = genders[idx] if idx < len(genders) else None
             if (
                     actor_gendor == 'all'
-                    or (actor_gendor == 'both' and gender in ['symbol female', 'symbol male'])
-                    or (actor_gendor == 'female' and gender == 'symbol female')
+                    or (actor_gendor == 'both' and gender in ['actor-female', 'symbol male'])
+                    or (actor_gendor == 'female' and gender == 'actor-female')
                     or (actor_gendor == 'male' and gender == 'symbol male')
             ):
                 r.append(act)
